@@ -12,7 +12,9 @@ namespace :deploy do
       assets = fetch(:normalize_asset_timestamps)
       if assets
         within release_path do
-          execute :find, "#{assets} -exec touch -t #{asset_timestamp} {} ';'; true"
+          with_rvm fetch(:task_ruby_version) do
+            execute :find, "#{assets} -exec touch -t #{asset_timestamp} {} ';'; true"
+          end
         end
       end
     end
@@ -30,7 +32,9 @@ namespace :deploy do
     on release_roles(fetch(:assets_roles)) do
       within release_path do
         with rails_env: fetch(:rails_env) do
-          execute :rake, "assets:clean"
+          with_rvm fetch(:task_ruby_version) do
+            execute :rake, "assets:clean"
+          end
         end
       end
     end
@@ -56,7 +60,9 @@ namespace :deploy do
       on release_roles(fetch(:assets_roles)) do
         within release_path do
           with rails_env: fetch(:rails_env) do
-            execute :rake, "assets:precompile"
+            with_rvm fetch(:task_ruby_version) do
+              execute :rake, "assets:precompile"
+            end
           end
         end
       end

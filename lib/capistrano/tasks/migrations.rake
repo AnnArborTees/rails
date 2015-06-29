@@ -13,7 +13,9 @@ namespace :deploy do
         info '[deploy:migrate] Run `rake db:migrate`'
         within release_path do
           with rails_env: fetch(:rails_env) do
-            execute :rake, "db:migrate"
+            with_rvm fetch(:task_ruby_version) do
+              execute :rake, "db:migrate"
+            end
           end
         end
       end
